@@ -25,10 +25,22 @@ def get_teller_credits(teller):
 # Generate the list of tellers and all their attributes
 def generate_list(tellers):
 
-    teller_list = [dbc.ListGroupItem("{} - Credits: {}, Debits: {}".format(i, get_teller_credits(i), get_teller_debits(i))) for i in tellers]
+    teller_list = []
+    for i in tellers:
 
-    return dbc.ListGroup(teller_list
-        )
+            credit = get_teller_credits(i)
+            debit = get_teller_debits(i)
+
+            teller_list.append(
+                    dbc.Row(dbc.ListGroup([
+                           dbc.ListGroupItem(i),
+                           dbc.ListGroupItem("Credit: {}".format(credit)),
+                           dbc.ListGroupItem("Debit: {}".format(debit)),
+                        ]))
+                
+             )
+    
+    return teller_list
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -46,19 +58,18 @@ app.layout = html.Div(children=[
 
                    html.Hr(),
 
-                   dbc.Row([
-                    dbc.Col(html.H3("Box 1", style={'textAlign': 'center'}),
-                            width={"size": 2,  "offset": 6}, style={'border': '1px solid black'}),
+                   dbc.Row(dbc.Col(dbc.ListGroup(
+                           [
+                                   dbc.ListGroupItem("Credit"),
+                                   dbc.ListGroupItem("Debit"),
+                                   dbc.ListGroupItem("Balance")
+                           ],
+                           style={"flex-direction": "row"}
+                   ), width={"size": 8,  "offset": 9} ) ),
 
-                    dbc.Col(html.H3("Box 2", style={'textAlign': 'center',}),
-                            width={"size": 2,  "offset": 0}, style={'border': '1px solid black'} ),
+                    html.Hr(),
 
-                    dbc.Col(html.H3("Box 3", style={'textAlign': 'center'}),
-                            width={"size": 2, "offset": 0}, style={'border': '1px solid black'}),
-                    ]
-                    ),
-
-                    dbc.Row(generate_list(unique_tellers))
+                    html.Div(generate_list(unique_tellers))
     ])
 ])
 
